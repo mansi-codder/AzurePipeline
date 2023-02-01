@@ -11,6 +11,9 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
+  Major: '1'
+  Minor: '0'
+  Patch: '0'
 
 steps:
 - task: UseDotNet@2
@@ -23,11 +26,34 @@ steps:
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
 
+#This pipeline uses an artifact feed for dotnet restore
 - task: DotNetCoreCLI@2
+  displayName: 'Artifact feed for dotnet restore'
   inputs:
     command: 'restore'
     feedsToUse: 'select'
-    vstsFeed: 'my-vsts-feed' # A series of numbers and letters
+    vstsFeed: 'Allget' # A series of numbers and letters
+  
+#Create a NuGet package
+- task: DotNetCoreCLI@2
+  displayName: 'Create a NuGet package'
+  inputs:
+    command: pack
+    versioningScheme: byPrereleaseNumber
+    majorVersion: '$(Major)'
+    minorVersion: '$(Minor)'
+    patchVersion: '$(Patch)'
+    packagesToPack: '**/*.csproj'
+
+- task: NuGetAuthenticate@0
+  displayName: 'NuGet Authenticate'
+- task: NuGetCommand@2
+  displayName: 'NuGet push to serverlesscompute/Allget'
+  inputs:
+    command: push
+    publishVstsFeed: 'serverlesscompute/Allget'
+    allowPackageConflicts: true
+    
 
 
 
