@@ -39,10 +39,6 @@ steps:
   displayName: 'Create a NuGet package'
   inputs:
     command: pack
-    versioningScheme: byPrereleaseNumber
-    majorVersion: '$(Major)'
-    minorVersion: '$(Minor)'
-    patchVersion: '$(Patch)'
     packagesToPack: '**/*.csproj'
 
 - task: NuGetAuthenticate@0
