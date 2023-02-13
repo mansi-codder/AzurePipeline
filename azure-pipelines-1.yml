@@ -15,13 +15,21 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
+- task: UseDotNet@2
+  displayName: Install Dotnet sdk
+  inputs:
+    packageType: 'sdk'
+    version: '6.x'
 - task: NuGetToolInstaller@1
+  displayName: NuGetToolInstaller
 
 - task: NuGetCommand@2
+  displayName: restoreSolution
   inputs:
     restoreSolution: '$(solution)'
 
 - task: VSBuild@1
+  displayName: Build, package and Zip artifacts 
   inputs:
     solution: '$(solution)'
     msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
@@ -29,6 +37,7 @@ steps:
     configuration: '$(buildConfiguration)'
 
 - task: VSTest@2
+  displayName: Build test projects
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
