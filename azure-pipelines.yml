@@ -40,19 +40,6 @@ steps:
     command: 'restore'
     feedsToUse: 'select'
     vstsFeed: 'my-vsts-feed' # A series of numbers and letters
-- task: DotNetCoreCLI@2
-  displayName: pack artificats
-  inputs:
-    command: 'pack'
-    packagesToPack: '**/*.csproj'
-    versioningScheme: 'byBuildNumber'
-  
-- task: PublishBuildArtifacts@1
-  displayName: PublishBuildArtifacts
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'drop'
-    publishLocation: 'Container'
 
 - task: DotNetCoreCLI@2
   displayName: publishWebProjects
