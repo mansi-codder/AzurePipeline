@@ -22,13 +22,42 @@ steps:
     
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
+- task: DotNetCoreCLI@2
+  displayName: 'build $(buildConfiguration)'
+  inputs:
+    command: 'build'
+    projects: '**/*.csproj'
+    arguments: '$(buildConfiguration)'
 
+- task: DotNetCoreCLI@2
+  displayName: restore solution
+  inputs:
+    command: 'restore'
+    projects: '**/*.sln'
+    feedsToUse: 'select'
 - task: DotNetCoreCLI@2
   inputs:
     command: 'restore'
     feedsToUse: 'select'
     vstsFeed: 'my-vsts-feed' # A series of numbers and letters
+- task: DotNetCoreCLI@2
+  displayName: pack artificats
+  inputs:
+    command: 'pack'
+    packagesToPack: '**/*.csproj'
+    versioningScheme: 'byBuildNumber'
+  
+- task: PublishBuildArtifacts@1
+  displayName: PublishBuildArtifacts
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
 
-
-
+- task: DotNetCoreCLI@2
+  displayName: publishWebProjects
+  inputs:
+    command: 'publish'
+    publishWebProjects: true
+    zipAfterPublish: true
 
