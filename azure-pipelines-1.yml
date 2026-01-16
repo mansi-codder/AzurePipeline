@@ -35,7 +35,7 @@ steps:
     SonarQube: 'SonarQubeCloudServiceConnection'
     organization: 'mansigandhi456'
     scannerMode: 'dotnet'
-    dotnetScannerVersion: '(latest)'
+    dotnetScannerVersion: '6.x'
     projectKey: 'mansigandhi456_serverlesscompute'
     projectName: 'serverlesscompute'
 - task: VSBuild@1
